@@ -1,6 +1,6 @@
 version: '3.9'
-services:
 
+services:
   db:
     image: mariadb:10.3
     container_name: db
@@ -19,7 +19,7 @@ services:
     container_name: passbolt
     depends_on:
       - db
-      - pgsql
+      # - pgsql # Uncomment if you want to use postgres
       - mailhog
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -34,6 +34,17 @@ services:
       - 80:80
       - 443:443
 
+  # Uncomment below lines to use postgres
+  # pgsql:
+  #   image: postgres:12.2-alpine
+  #   env_file:
+  #     - env/pgsql.env
+  #   volumes:
+  #     - pgsql_volume:/var/lib/pgsql
+  #   ports:
+  #     - "5432:5432"
+  #   profiles: ["pgsql"]
+
   ####################
   # Dev tools starts #
   ####################
@@ -46,17 +57,7 @@ services:
       - "9501:8080"
     depends_on:
       - db
-      - pgsql
-
-  pgsql:
-    image: postgres:12.2-alpine
-    env_file:
-      - env/pgsql.env
-    volumes:
-      - pgsql_volume:/var/lib/pgsql
-    ports:
-      - "5432:5432"
-    profiles: ["pgsql"]
+      # - pgsql # Uncomment if you want to use postgres
 
   mailhog:
     image: mailhog/mailhog:latest
@@ -120,6 +121,6 @@ services:
 
 volumes:
   database_volume:
-  pgsql_volume:
+  # pgsql_volume: # Uncomment this line to use postgres
   gpg_volume:
   images_volume:
